@@ -1,0 +1,61 @@
+general:
+  seed: 34
+  seed_workes: true
+trainer:
+  _target_: lightning.pytorch.Trainer
+  accelerator: auto
+  strategy: auto
+  devices: auto
+  logger: 
+    _target_: lightning.pytorch.loggers.WandbLogger
+    project: contrastive_worms
+    name: VICReg_Res18
+    log_model: True
+  callbacks:
+    - _target_: lightning.pytorch.callbacks.LearningRateMonitor
+    - _target_: lightning.pytorch.callbacks.ModelCheckpoint
+      monitor: Val/Loss
+      mode: min
+      save_last: true
+      save_top_k: 1
+  max_epochs: 80
+  log_every_n_steps: 50
+  benchmark: true
+  enable_progress_bar: true
+  enable_model_summary: true
+  sync_batchnorm: false
+data:
+  _target_: datasets.worm_dataloader.WormDataLoader
+  train_dataset_path: # PATH_TO_PT_FILE
+  val_dataset_path: # PATH_TO_PT_FILE
+  test_dataset_path: # PATH_TO_PT_FILE
+  shuffle: true
+  drop_last: true
+  num_workers: 10
+  pin_memory: true
+  batch_size: 512
+  img_size: 128
+  step: 10
+  persistent_workers: false
+  dataset_mean: [ 0.46981891936902803, 0.46981891936902803, 0.46981891936902803 ]
+  dataset_std: [ 0.09742516302252072, 0.09742516302252072, 0.09742516302252072 ]
+model:
+  _target_: models.vicreg_res18.VICReg
+  pretrained: false
+  head_input_dim: 64
+  head_hidden_dim: 128
+  head_out_dim: 64
+  lambda_param: 25.0
+  mu_param: 25.0
+  nu_param: 1.0
+  batch_size: ${data.batch_size}
+  input_dropout: 0.0
+  optimizer:
+    optim_partial:
+      _target_: torch.optim.AdamW
+      _partial_: true
+      lr: 0.001
+    lr_sched_partial:
+      _target_: torch.optim.lr_scheduler.CosineAnnealingLR
+      _partial_: true
+      T_max: ${trainer.max_epochs}
