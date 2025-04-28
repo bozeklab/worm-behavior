@@ -3,4 +3,4 @@ Repository for Unsupervised Representation Learning of C. elegans Poses and Beha
 
 ## Data
 The data used for this research was downloaded from [Zenodo - Open Worm Movement Database](https://zenodo.org/communities/open-worm-movement-database) as described in our [paper](https://doi.org/10.1101/2025.02.14.638285).
-The final, processed data used in this work are stored by the research group "BozekLab - Data Science of Bioimages" of Prof. Dr. Kasia Bozek.
+The final, processed data used in this work is stored by the research group "BozekLab - Data Science of Bioimages" of Prof. Dr. Kasia Bozek.
